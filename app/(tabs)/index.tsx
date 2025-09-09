@@ -1,23 +1,25 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Platform, StyleSheet } from 'react-native';
+
 
 export default function HomeScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
       headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+        <IconSymbol
+          size={310}
+          color="#808080"
+          name='list.dash.header.rectangle'
+          style={styles.headerImage}
         />
-      }>
+      }>      
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Dashboard</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
@@ -56,6 +58,12 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerImage: {
+    color: '#808080',
+    bottom: -90,
+    left: -35,
+    position: 'absolute',
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',

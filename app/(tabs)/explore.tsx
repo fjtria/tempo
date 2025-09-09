@@ -16,12 +16,12 @@ export default function TabTwoScreen() {
         <IconSymbol
           size={310}
           color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
+          name="person"
           style={styles.headerImage}
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
+        <ThemedText type="title">Profile</ThemedText>
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
       <Collapsible title="File-based routing">
