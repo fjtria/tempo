@@ -1,41 +1,24 @@
-import { HelloWave } from '@/components/HelloWave';
+import { Collapsible } from '@/components/Collapsible';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useNotifications } from "@/hooks/useNotifications";
 import * as Notifications from 'expo-notifications';
-import { useEffect } from "react";
-import { Button, Platform, StyleSheet } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
-  useEffect(() => {
-    const configureNotificationsAsync = async () => {
-      const { granted } = await Notifications.requestPermissionsAsync();
-      if (!granted) {
-        return console.warn("⚠️ Notification Permissions not granted!");
-      }
-
-      Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-          shouldPlaySound: true,
-          shouldSetBadge: false,
-          shouldShowBanner: true,
-          shouldShowList: true
-        }),
-      });
-    };
-    configureNotificationsAsync();
-  }, []);
+  const { scheduleNotificationAsync, cancelNotificationAsync } =
+    useNotifications();
 
   const sendNotification = () => {
-    Notifications.scheduleNotificationAsync({
+    scheduleNotificationAsync({
       content: {
-        title: "🧪 Test Notification!",
-        body: "This is a test.",
+        title: "🧪 Test notification!",
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        seconds: 1,
+        seconds: 3,
       },
     });
   };
@@ -50,43 +33,33 @@ export default function HomeScreen() {
           name='list.dash.header.rectangle'
           style={styles.headerImage}
         />
-      }>      
+      }>
+
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Dashboard</ThemedText>
-        <HelloWave />
       </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
+        <ThemedText type="subtitle">Notifications Demo</ThemedText>
+        <Button title="Send me a notification" onPress={sendNotification} />
+        <Button title="Cancel notification" onPress={cancelNotificationAsync} />
       </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
+        <ThemedText type="subtitle">Upcoming Reminders</ThemedText>
+        <ThemedText>This will be the dashboard of the health app.</ThemedText>
       </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+        <Collapsible title='Medications'>
+        </Collapsible>
+        <Collapsible title='Nutrition'>
+        </Collapsible>
+        <Collapsible title='Hydration'>
+        </Collapsible>
+        <Collapsible title='Cycle Tracking'>
+        </Collapsible>
       </ThemedView>
-      <Button title="Schedule Notification" onPress={sendNotification} />
     </ParallaxScrollView>
   );
 }
