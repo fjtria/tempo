@@ -3,10 +3,43 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { Platform, StyleSheet } from 'react-native';
-
+import * as Notifications from 'expo-notifications';
+import { useEffect } from "react";
+import { Button, Platform, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
+  useEffect(() => {
+    const configureNotificationsAsync = async () => {
+      const { granted } = await Notifications.requestPermissionsAsync();
+      if (!granted) {
+        return console.warn("⚠️ Notification Permissions not granted!");
+      }
+
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldPlaySound: true,
+          shouldSetBadge: false,
+          shouldShowBanner: true,
+          shouldShowList: true
+        }),
+      });
+    };
+    configureNotificationsAsync();
+  }, []);
+
+  const sendNotification = () => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "🧪 Test Notification!",
+        body: "This is a test.",
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: 1,
+      },
+    });
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -53,6 +86,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <Button title="Schedule Notification" onPress={sendNotification} />
     </ParallaxScrollView>
   );
 }
