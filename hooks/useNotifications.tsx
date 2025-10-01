@@ -1,7 +1,7 @@
 // Adapted from https://dev.to/walter_bloggins/local-notifications-in-expo-2p47
 
 import * as Notifications from "expo-notifications";
-import {
+import React, {
     createContext,
     FC,
     PropsWithChildren,
