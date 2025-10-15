@@ -10,10 +10,10 @@ export default function DashboardStackLayout() {
                 title: 'Dashboard',
                 headerShown: true,
                 headerStyle: {
-                backgroundColor: '#25292e',
+                backgroundColor: '#6C4386',
                 },
                 headerShadowVisible: false,
-                headerTintColor: '#fff',
+                headerTintColor: '#F5F0F6',
             }} 
         />
         <Stack.Screen
@@ -21,10 +21,10 @@ export default function DashboardStackLayout() {
             options={{
                 title: 'Medications',
                 headerStyle: {
-                    backgroundColor: '#25292e',
+                    backgroundColor: '#6C4386',
                 },
                 headerShadowVisible: false,
-                headerTintColor: '#fff',
+                headerTintColor: '#F5F0F6',
             }}
         />
         <Stack.Screen
@@ -32,10 +32,10 @@ export default function DashboardStackLayout() {
             options={{
                 title: 'Nutrition',
                 headerStyle: {
-                    backgroundColor: '#25292e',
+                    backgroundColor: '#6C4386',
                 },
                 headerShadowVisible: false,
-                headerTintColor: '#fff',
+                headerTintColor: '#F5F0F6',
             }}
         />
         <Stack.Screen
@@ -43,10 +43,10 @@ export default function DashboardStackLayout() {
             options={{
                 title: 'Hydration',
                 headerStyle: {
-                    backgroundColor: '#25292e',
+                    backgroundColor: '#6C4386',
                 },
                 headerShadowVisible: false,
-                headerTintColor: '#fff',
+                headerTintColor: '#F5F0F6',
             }} 
         />
         <Stack.Screen
@@ -54,10 +54,10 @@ export default function DashboardStackLayout() {
             options={{ 
                 title: 'Cycle Tracking',
                 headerStyle: {
-                    backgroundColor: '#25292e',
+                    backgroundColor: '#6C4386',
                 },
                 headerShadowVisible: false,
-                headerTintColor: '#fff',
+                headerTintColor: '#F5F0F6',
             }}
             />
     </Stack>

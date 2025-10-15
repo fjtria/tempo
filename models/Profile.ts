@@ -6,8 +6,10 @@ export class Profile extends Realm.Object<Profile> {
   firstName!: string;
   lastName!: string;
   dateOfBirth?: Date;
+  gender?: string;
+  bloodTypeLetter?: string;
+  bloodTypeRh?: string;
 
-  // Schema definition
   static schema: Realm.ObjectSchema = {
     name: 'Profile',
     primaryKey: '_id',
@@ -16,6 +18,9 @@ export class Profile extends Realm.Object<Profile> {
       firstName: 'string',
       lastName: 'string',
       dateOfBirth: 'date?', // ? marks property as optional
+      gender: 'string?',
+      bloodTypeLetter: 'string?',
+      bloodTypeRh: 'string?',
     },
   };
 }

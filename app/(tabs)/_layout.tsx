@@ -8,9 +8,9 @@ export default function TabLayout() {
     <Tabs
         screenOptions={{
             headerShown: false,
-            tabBarActiveTintColor: '#ffd33d',
+            tabBarActiveTintColor: '#6C4386',
             tabBarStyle: {
-            backgroundColor: '#25292e'
+            backgroundColor: '#F5F0F6'
             },
         }}
     >
@@ -30,10 +30,10 @@ export default function TabLayout() {
             title: 'Profile',
             headerShown: true,
             headerStyle: {
-                backgroundColor: '#25292e',
+                backgroundColor: '#6C4386',
             },
             headerShadowVisible: false,
-            headerTintColor: '#fff',
+            headerTintColor: '#F5F0F6',
             tabBarIcon: ({ color, focused }) => (
                 <Ionicons name={focused ? 'person-sharp' : 'person-outline'} color={color} size={24}/>
             ),
