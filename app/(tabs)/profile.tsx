@@ -77,7 +77,32 @@ export default function ProfileScreen() {
     return `${month} ${day}, ${year}`;
   };
 
-  const age = 23;
+  const calculateAge = (dateOfBirth) => {
+    // Return '-' if no dateOfBirth is provided
+    if (!dateOfBirth) {
+      return '-';
+    }
+
+    const today = new Date();
+
+    // Account for timezone
+    const todayYear = today.getUTCFullYear();
+    const todayMonth = today.getUTCMonth();
+    const todayDay = today.getUTCDate();
+
+    const birthYear = dateOfBirth.getUTCFullYear();
+    const birthMonth = dateOfBirth.getUTCMonth();
+    const birthDay = dateOfBirth.getUTCDate();
+
+    let age = todayYear - birthYear;
+
+    // Decrease age by 1 if the birthday has not yet occurred this year
+    if (todayMonth < birthMonth || (todayMonth === birthMonth && todayDay < birthDay)) {
+      age--;
+    }
+
+    return age;
+  };
 
   const onGenderOpen = useCallback(() => {
     setBloodLetterOpen(false);
@@ -250,7 +275,7 @@ export default function ProfileScreen() {
           </>
         ) : (
           <Text style={styles.valueText}>
-            {currentProfile?.dateOfBirth ? formatUTCDateForDisplay(currentProfile.dateOfBirth) : 'Not set'} ({age})
+            {currentProfile?.dateOfBirth ? formatUTCDateForDisplay(currentProfile.dateOfBirth) : 'Not set'} ({calculateAge(currentProfile?.dateOfBirth)})
           </Text>
         )}
       </View>
@@ -350,12 +375,13 @@ const styles = StyleSheet.create({
   },
   input: {
     color: '#020202',
+    backgroundColor: 'white',
     borderColor: '#6C4386',
     borderWidth: 1,
     borderRadius: 24,
     padding: 16,
     marginTop: 4,
-    fontSize: 16,
+    fontSize: 14,
   },
   button: {
     backgroundColor: '#6C4386',
@@ -374,8 +400,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   dropdown: {
+    color: '#020202',
     borderColor: '#6C4386',
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingHorizontal: 16,
     marginTop: 4,
+    fontSize: 16,
   },
   dropdownContainer: {
     borderColor: '#6C4386',

@@ -20,7 +20,7 @@ export default function TabLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'heart-sharp' : 'heart-outline'} color={color} size={24} />
+            <Ionicons name={focused ? 'fitness-sharp' : 'fitness-outline'} color={color} size={24} />
           ),
         }}
       />
