@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function CycleTrackingScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Cycle Tracking screen</Text>
+      <Text style={styles.text}>Cycle Tracking Coming Soon.</Text>
     </View>
   );
 }
