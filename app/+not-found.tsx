@@ -1,6 +1,6 @@
 import { Link, Stack } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
 export default function NotFoundScreen() {
   return (
@@ -11,6 +11,7 @@ export default function NotFoundScreen() {
       }} 
       />
       <View style={styles.container}>
+        <Image style={styles.logo} source={require('../assets/images/tempo-logo.png')} />
         <Link href="(tabs)" style={styles.button}>
           Enter Dashboard
         </Link>
@@ -22,14 +23,22 @@ export default function NotFoundScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
+    backgroundColor: '#F5F0F6',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
+  logo: {
+    width: 300,
+    height: 100,
+    marginBottom: 20, // (Optional) Add some spacing
+  },
   button: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
+    fontWeight: 'bold',
+    color: '#F5F0F6',
+    backgroundColor: '#6C4386',
+    borderRadius: 16
   },
 });
