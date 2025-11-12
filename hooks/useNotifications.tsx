@@ -1,5 +1,3 @@
-// hooks/useNotifications.tsx
-
 import * as Notifications from 'expo-notifications';
 import React, {
   createContext,
@@ -10,7 +8,6 @@ import React, {
 } from 'react';
 import { Platform } from 'react-native';
 
-// --- Interfaces ---
 export interface ScheduleWeeklyReminderOptions {
   content: Notifications.NotificationContentInput;
   time: {
@@ -28,10 +25,9 @@ interface NotificationContextType {
     options: ScheduleWeeklyReminderOptions
   ) => Promise<string[]>;
   cancelNotificationByIdAsync: (notificationId: string) => Promise<void>;
-  getScheduledNotificationsAsync: () => Promise<Notifications.Notification[]>;
+  getScheduledNotificationsAsync: () => Promise<Notifications.NotificationRequest[]>;
   cancelAllNotificationsAsync: () => Promise<void>;
 }
-// ---
 
 const NotificationsContext = createContext<NotificationContextType | undefined>(
   undefined
@@ -46,8 +42,6 @@ const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
         return;
       }
 
-      // 1. REVERT: Set the handler ONCE and leave it.
-      // This fixes the "iOS not delivering" bug.
       Notifications.setNotificationHandler({
         handleNotification: async () => ({
           shouldPlaySound: true,
@@ -57,7 +51,7 @@ const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
         }),
       });
 
-      // 2. Android Channel
+      // Android channel
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
           name: 'default',
@@ -71,25 +65,16 @@ const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
     configureNotificationsAsync();
   }, []);
 
-  /**
-   * Schedules a generic notification.
-   * REVERT: We are removing the toggle logic.
-   */
+  // schedules single, generic notification
   const scheduleNotificationAsync = async (
     request: Notifications.NotificationRequestInput
   ) => {
     const id = await Notifications.scheduleNotificationAsync(request);
-    console.log('✍️ Scheduling generic notification: ', id);
+    console.log('SCHEDULING NOTIFICATION: ', id);
     return id;
   };
 
-  /**
-   * Schedules recurring weekly reminders.
-   *
-   * NEW STRATEGY: This now calculates the next 8 trigger dates and
-   * schedules 8 individual, one-time notifications.
-   * This bypasses the OS-level "repeats: true" bug.
-   */
+  // schedules weekly reminders
   const scheduleWeeklyReminder = async (
     options: ScheduleWeeklyReminderOptions
   ) => {
@@ -98,67 +83,72 @@ const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
     
     const now = new Date();
     const datesToSchedule: Date[] = [];
-    const WEEKS_TO_SCHEDULE = 8; // Schedule for the next 8 weeks
+    
+    const MAX_DAYS_TO_CHECK = 60; 
+    const NOTIFICATIONS_TO_SCHEDULE = 8; 
 
     console.log(
-      `✍️ Calculating next ${WEEKS_TO_SCHEDULE} trigger dates for weekdays: ${weekdays.join(
+      `CALCULATING NEXT ${NOTIFICATIONS_TO_SCHEDULE} DATES FOR: ${weekdays.join(
         ','
       )} at ${time.hour}:${time.minute}`
     );
 
-    // Iterate over the next ~60 days to find all matching weekdays
-    // (8 weeks * 7 days = 56. We'll check 60 for safety)
-    for (let i = 0; i < WEEKS_TO_SCHEDULE * 7 + 7; i++) {
+    for (let i = 0; i < MAX_DAYS_TO_CHECK; i++) {
+      // stop if we found enough dates
+      if (datesToSchedule.length >= NOTIFICATIONS_TO_SCHEDULE) {
+        break;
+      }
+
       const date = new Date();
-      date.setDate(date.getDate() + i); // Check each day starting from today
+      date.setDate(date.getDate() + i); // check each day starting from today
+      const dayOfWeek = date.getDay() + 1;
 
-      const dayOfWeek = date.getDay() + 1; // 1=Sunday, 7=Saturday
-
-      // Check if this day is one the user selected
+      // check if this day is one the user selected
       if (weekdays.includes(dayOfWeek)) {
-        // Set the time for this date
+        // set the time for this date
         date.setHours(time.hour, time.minute, 0, 0); // hour, minute, second, ms
 
-        // Only schedule if this exact time is in the future
+        // only schedule if this exact time is in the future
         if (date > now) {
           datesToSchedule.push(date);
         }
       }
     }
 
-    // Now, schedule all the calculated dates
-    console.log(`Scheduling ${datesToSchedule.length} individual notifications...`);
+    // schedule all the calculated dates
+    console.log(`SCHEDULING ${datesToSchedule.length} NOTIFICATIONS`);
 
     for (const date of datesToSchedule) {
       try {
         const id = await scheduleNotificationAsync({
           content,
-          trigger: date, // Use the specific Date object as the trigger
+          trigger: { 
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: date 
+          },
         });
         notificationIds.push(id);
-        console.log(`   ...Scheduled (ID: ${id}) for ${date.toISOString()}`);
+        console.log(`SCHEDULED NOTIFICATION: ${id} FOR ${date.toISOString()}`);
       } catch (e) {
-        console.error(`Failed to schedule for date ${date}:`, e);
+        console.error(`FAILED SCHEDULING FOR ${date}:`, e);
       }
     }
 
     return notificationIds;
   };
 
-  // --- Other helper functions (no changes needed) ---
-
   const cancelNotificationByIdAsync = async (notificationId: string) => {
-    console.log('🗑️ Canceling notification: ', notificationId);
+    console.log('CANCELING NOTIFICATION: ', notificationId);
     await Notifications.cancelScheduledNotificationAsync(notificationId);
   };
 
   const getScheduledNotificationsAsync = async () => {
-    console.log('🔍 Fetching all scheduled notifications...');
+    console.log('FETCHING ALL SCHEDULED NOTIFICATIONS');
     return Notifications.getAllScheduledNotificationsAsync();
   };
 
   const cancelAllNotificationsAsync = async () => {
-    console.log('💥 Canceling ALL scheduled notifications...');
+    console.log('CANCELING ALL SCHEDULED NOTIFICATIONS');
     await Notifications.cancelAllScheduledNotificationsAsync();
   };
 

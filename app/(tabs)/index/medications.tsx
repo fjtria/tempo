@@ -1,5 +1,5 @@
 import { useNotifications } from '@/hooks/useNotifications';
-import { MedicationReminder } from '@/models/MedicationReminder'; // Make sure this path is correct
+import { MedicationReminder } from '@/models/MedicationReminder';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -29,7 +29,16 @@ const DAYS_OF_WEEK = [
   { id: 7, name: 'Sa' },
 ];
 
-const DAY_NAMES_MAP = { 1: 'Su', 2: 'Mo', 3: 'Tu', 4: 'We', 5: 'Th', 6: 'Fr', 7: 'Sa' };
+type DayKey = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+const DAY_NAMES_MAP: Record<DayKey, string> = {
+  1: 'Su',
+  2: 'Mo',
+  3: 'Tu',
+  4: 'We',
+  5: 'Th',
+  6: 'Fr',
+  7: 'Sa',
+};
 
 // gets a safe initial time (1 min in future, 0 seconds)
 const getInitialTime = () => {
@@ -100,7 +109,7 @@ const formatNextTrigger = (date: Date | null): string => {
 const formatDays = (weekdays: number[]): string => {
   const sortedDays = [...weekdays].sort();
   if (sortedDays.length === 7) return 'Every day';
-  return sortedDays.map((day) => DAY_NAMES_MAP[day] || '?').join(', ');
+  return sortedDays.map((day) => DAY_NAMES_MAP[day as DayKey] || '?').join(', ');
 };
 
 export default function MedicationsScreen() {
@@ -152,16 +161,16 @@ export default function MedicationsScreen() {
         editingReminderId
       );
       if (reminder) {
-        setMedicationName(reminder.name);
-        setSelectedDays(Array.from(reminder.weekdays));
+        setMedicationName(reminder.name as string);
+        setSelectedDays(Array.from(reminder.weekdays as number[]));
         const newTime = getInitialTime();
-        newTime.setHours(reminder.hour, reminder.minute, 0, 0);
+        newTime.setHours(reminder.hour as number, reminder.minute as number, 0, 0);
         setTime(newTime);
       }
     } else {
       resetForm();
     }
-  }, [editingReminderId, realm]);
+  }, [editingReminderId, realm, resetForm]);
 
   // handle time selection from the picker
   const onTimeChange = (
@@ -225,7 +234,7 @@ export default function MedicationsScreen() {
         if (!reminderToUpdate) return;
 
         // cancel old notifications
-        for (const id of reminderToUpdate.notificationIds) {
+        for (const id of reminderToUpdate.notificationIds as string[]) {
           await cancelNotificationByIdAsync(id);
         }
 
@@ -290,7 +299,7 @@ export default function MedicationsScreen() {
           onPress: async () => {
             try {
               // cancel all notifications
-              for (const id of reminder.notificationIds) {
+              for (const id of reminder.notificationIds as string[]) {
                 await cancelNotificationByIdAsync(id);
               }
               // delete from realm
@@ -451,7 +460,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F0F6',
   },
   formTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#020202',
     marginBottom: 16,
