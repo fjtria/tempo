@@ -1,14 +1,13 @@
 import { HydrationReminder } from '@/models/HydrationReminder';
 import { MedicationReminder } from '@/models/MedicationReminder';
 import { NutritionReminder } from '@/models/NutritionReminder';
-import { calculateNextTrigger, formatNextTrigger } from '@/utils/reminders'; // Import new helpers
+import { calculateNextTrigger, formatNextTrigger } from '@/utils/reminders';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQuery } from '@realm/react';
 import { Link } from 'expo-router';
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-// Config for styling each reminder type
 const REMINDER_CONFIG = {
   MedicationReminder: {
     icon: 'heart-outline' as const,
@@ -86,10 +85,8 @@ export default function Dashboard() {
         )}
       </View>
 
-      {/* Navigation Links (Unchanged) */}
       <View style={styles.screenContainer}>
         <Link href="medications" style={[styles.screenLink, {backgroundColor: '#E6A445'}]}>
-          {/* ... content ... */}
           <View style={styles.linkInnerContainer}>
             <View style={styles.screenLinkContent}>
               <Ionicons name={'heart-outline'} color={'#F5F0F6'} size={28} />
@@ -100,7 +97,6 @@ export default function Dashboard() {
           </View>
         </Link>
         <Link href="nutrition" style={[styles.screenLink, {backgroundColor: '#438669'}]}>
-          {/* ... content ... */}
           <View style={styles.linkInnerContainer}>
             <View style={styles.screenLinkContent}>
               <Ionicons name={'nutrition-outline'} color={'#F5F0F6'} size={28} />
@@ -111,7 +107,6 @@ export default function Dashboard() {
           </View>
         </Link>
         <Link href="hydration" style={[styles.screenLink, {backgroundColor: '#436C86'}]}>
-          {/* ... content ... */}
           <View style={styles.linkInnerContainer}>
             <View style={styles.screenLinkContent}>
               <Ionicons name={'water-outline'} color={'#F5F0F6'} size={28} />  
@@ -122,7 +117,6 @@ export default function Dashboard() {
           </View>
         </Link>
         <Link href="cycleTracking" style={[styles.screenLink, {backgroundColor: '#864343'}]}>
-          {/* ... content ... */}
           <View style={styles.linkInnerContainer}>
             <View style={styles.screenLinkContent}>
               <Ionicons name={'repeat-outline'} color={'#F5F0F6'} size={28} />
@@ -145,7 +139,7 @@ const styles = StyleSheet.create({
   remindersContainer: {
     padding: 16,
     flex: 1,
-    gap: 12, // Add gap for reminder items
+    gap: 12,
   },
   screenContainer: {
     width: '100%',
