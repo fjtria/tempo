@@ -361,7 +361,7 @@ export default function MedicationsScreen() {
 
       {/* days */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Repeat on</Text>
+        <Text style={styles.label}>Repeat</Text>
         <View style={styles.dayPickerContainer}>
           {DAYS_OF_WEEK.map((day) => (
             <TouchableOpacity
