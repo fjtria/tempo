@@ -1,7 +1,10 @@
 import { NotificationsProvider } from '@/hooks/useNotifications';
+import { CycleEntry } from '@/models/CycleEntry';
+import { CyclePrediction } from '@/models/CyclePrediction';
 import { HydrationReminder } from '@/models/HydrationReminder';
 import { MedicationReminder } from '@/models/MedicationReminder';
 import { NutritionReminder } from '@/models/NutritionReminder';
+
 import { Profile } from '@/models/Profile';
 import { RealmProvider } from '@realm/react';
 import { Stack } from 'expo-router';
@@ -14,7 +17,9 @@ export default function RootLayout() {
         Profile,
         MedicationReminder,
         NutritionReminder,
-        HydrationReminder
+        HydrationReminder,
+        CycleEntry,
+        CyclePrediction
       ]}
       deleteRealmIfMigrationNeeded={true}
     >

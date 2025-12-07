@@ -1,3 +1,4 @@
+import { CyclePrediction } from '@/models/CyclePrediction';
 import { HydrationReminder } from '@/models/HydrationReminder';
 import { MedicationReminder } from '@/models/MedicationReminder';
 import { NutritionReminder } from '@/models/NutritionReminder';
@@ -21,6 +22,10 @@ const REMINDER_CONFIG = {
     icon: 'water-outline' as const,
     color: '#436C86',
   },
+  CyclePrediction: {
+    icon: 'repeat-outline' as const,
+    color: '#864343',
+  },
 };
 
 type ReminderType = keyof typeof REMINDER_CONFIG;
@@ -30,37 +35,43 @@ export default function Dashboard() {
   const medicationReminders = useQuery(MedicationReminder);
   const nutritionReminders = useQuery(NutritionReminder);
   const hydrationReminders = useQuery(HydrationReminder);
+  const cyclePredictions = useQuery(CyclePrediction);
 
   // combine, sort, and slice the reminders
   const upcomingReminders = useMemo(() => {
     const now = new Date();
 
-    // combine all into one array
-    const allReminders: (MedicationReminder | NutritionReminder | HydrationReminder)[] = [
+    const standardReminders = [
       ...medicationReminders,
       ...nutritionReminders,
       ...hydrationReminders,
-    ];
+    ].map((reminder) => ({
+      _id: reminder._id.toHexString(),
+      name: reminder.name as string,
+      nextTrigger: calculateNextTrigger(reminder, now),
+      type: reminder.constructor.name as ReminderType,
+    }));
 
-    // calculate next trigger, filter out past, sort by soonest, and take top 3
-    return allReminders
-      .map((reminder) => {
-        return {
-          _id: reminder._id.toHexString(),
-          name: reminder.name as string,
-          nextTrigger: calculateNextTrigger(reminder, now),
-          type: reminder.constructor.name as ReminderType,
-        };
-      })
-      .filter((item) => !!item.nextTrigger) // ensure future trigger
+    const predictionItem = cyclePredictions.length > 0 ? cyclePredictions[0] : null;
+    if (predictionItem && predictionItem.nextPredictedDate) {
+      standardReminders.push({
+        _id: predictionItem._id.toHexString(),
+        name: "Predicted Period",
+        nextTrigger: predictionItem.nextPredictedDate,
+        type: 'CyclePrediction',
+      });
+    }
+
+    return standardReminders
+      .filter((item) => !!item.nextTrigger && item.nextTrigger.getTime() > now.getTime()) // ensure future trigger
       .sort((a, b) => a.nextTrigger!.getTime() - b.nextTrigger!.getTime()) // soonest first
       .slice(0, 3); // get the top 3
-  }, [medicationReminders, nutritionReminders, hydrationReminders]);
+  }, [medicationReminders, nutritionReminders, hydrationReminders, cyclePredictions]);
 
   return (
     <View style={styles.container}>
       <View style={styles.remindersContainer}>
-        <Text style={styles.header}>Scheduled Reminders</Text>
+        <Text style={styles.header}>Upcoming Reminders</Text>
         
         {upcomingReminders.length === 0 ? (
           <Text style={styles.emptyText}>No reminders scheduled.</Text>
@@ -148,7 +159,7 @@ const styles = StyleSheet.create({
     rowGap: 16,
   },
   header: {
-    paddingBottom: 4, // Adjusted padding
+    paddingBottom: 4,
     color: '#020202',
     fontSize: 18,
     fontWeight: 'bold',
