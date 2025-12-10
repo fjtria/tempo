@@ -4,7 +4,7 @@ import { CyclePrediction } from '@/models/CyclePrediction';
 import { useQuery, useRealm } from '@realm/react';
 import * as Notifications from 'expo-notifications';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { BSON } from 'realm';
 
@@ -36,6 +36,11 @@ const getLocalTodayString = () => {
   return `${year}-${month}-${day}`;
 };
 
+// format dates for history section
+const formatDisplayDate = (date: Date) => {
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
 export default function CycleTrackingScreen() {
   const realm = useRealm();
   const { scheduleNotificationAsync, cancelNotificationByIdAsync } = useNotifications();
@@ -44,6 +49,51 @@ export default function CycleTrackingScreen() {
 
   const nextPrediction = predictionData[0]; 
   const todayString = getLocalTodayString();
+
+  const history = useMemo(() => {
+    // 1. Sort dates ascending
+    const sortedDates = Array.from(periodEntries)
+      .map(e => e.date)
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    if (sortedDates.length === 0) return [];
+
+    const periods: { start: Date; end: Date; length: number }[] = [];
+    
+    let currentStart = sortedDates[0];
+    let currentEnd = sortedDates[0];
+
+    for (let i = 1; i < sortedDates.length; i++) {
+      const date = sortedDates[i];
+      // Calculate difference in days
+      const diffTime = date.getTime() - currentEnd.getTime();
+      const diffDays = diffTime / (1000 * 3600 * 24);
+
+      if (diffDays <= 1.1) { 
+        // If gap is ~1 day (allowing for slight time diffs), it's contiguous
+        currentEnd = date;
+      } else {
+        // Gap found: Push the previous period and start a new one
+        periods.push({
+          start: currentStart,
+          end: currentEnd,
+          length: Math.round((currentEnd.getTime() - currentStart.getTime()) / (1000 * 3600 * 24)) + 1
+        });
+        currentStart = date;
+        currentEnd = date;
+      }
+    }
+
+    // Push the final period
+    periods.push({
+      start: currentStart,
+      end: currentEnd,
+      length: Math.round((currentEnd.getTime() - currentStart.getTime()) / (1000 * 3600 * 24)) + 1
+    });
+
+    // Return reversed (Newest first)
+    return periods.reverse();
+  }, [periodEntries]);
 
   // PREDICTION ALGORITHM
   const calculateNextPrediction = useCallback((entries: Realm.Results<CycleEntry>): Date | null => {
@@ -278,7 +328,7 @@ export default function CycleTrackingScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.headerContainer}> 
         <View style={styles.predictionBox}>
             <Text style={styles.predictionLabel}>Next Predicted Period:</Text>
@@ -290,7 +340,7 @@ export default function CycleTrackingScreen() {
             </Text>
         </View>
         <Text style={styles.headerTitle}>Log Cycle Dates</Text>
-        <Text style={styles.subtitle}>
+        <Text style={styles.calendarSubtitle}>
           Tap dates on the calendar to log your period.
         </Text>
       </View>
@@ -314,13 +364,25 @@ export default function CycleTrackingScreen() {
         />
       </View>
 
-      <View style={styles.summaryContainer}>
-        <Text style={styles.summaryTitle}>History</Text>
-        <Text style={styles.summaryText}>
-          You have logged <Text style={{fontWeight: 'bold', color: THEME_COLOR}}>{periodEntries.length}</Text> days of cycle data.
+      <View style={styles.historyContainer}>
+        <Text style={styles.historyTitle}>History</Text>
+        {
+          history.map((cycle, index) => (
+            <View key={index} style={styles.historyItem}>
+              <View style={styles.historyRow}>
+                <Text style={styles.historyDate}>
+                  {formatDisplayDate(cycle.start)} - {formatDisplayDate(cycle.end)}
+                </Text>
+                <Text style={styles.historyLength}>{cycle.length} days</Text>
+              </View>
+            </View>
+          ))
+        }
+        <Text style={styles.historyText}>
+          You have logged <Text style={{fontWeight: 'bold'}}>{periodEntries.length}</Text> days of cycle data.
         </Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -340,30 +402,6 @@ const styles = StyleSheet.create({
     color: '#020202',
     marginTop: 16,
     marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#6C4386',
-  },
-  calendarContainer: {
-    marginTop: 16,
-    marginHorizontal: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  summaryContainer: {
-    padding: 16,
-    marginTop: 16,
-  },
-  summaryTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#020202',
-    marginBottom: 8,
-  },
-  summaryText: {
-    fontSize: 16,
-    color: '#333',
   },
   predictionBox: {
     backgroundColor: 'white',
@@ -386,5 +424,52 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 8,
-  }
+  },
+  calendarContainer: {
+    marginTop: 16,
+    marginHorizontal: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  calendarSubtitle: {
+    fontSize: 14,
+    color: '#6C4386',
+  },
+  historyContainer: {
+    padding: 16,
+    marginTop: 16,
+  },
+  historyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#020202',
+    marginBottom: 8,
+  },
+  historyText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  historyItem: {
+    backgroundColor: 'white',
+    padding: 16,
+    marginBottom: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  historyRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  historyDate: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#020202',
+  },
+  historyLength: {
+    fontSize: 14,
+    color: THEME_COLOR,
+    fontWeight: 'bold',
+  },
 });
