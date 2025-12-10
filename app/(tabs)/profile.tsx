@@ -77,15 +77,12 @@ export default function ProfileScreen() {
     return `${month} ${day}, ${year}`;
   };
 
-  const calculateAge = (dateOfBirth) => {
-    // Return '-' if no dateOfBirth is provided
+  const calculateAge = (dateOfBirth: Date | null | undefined) => {
     if (!dateOfBirth) {
       return '-';
     }
 
     const today = new Date();
-
-    // Account for timezone
     const todayYear = today.getUTCFullYear();
     const todayMonth = today.getUTCMonth();
     const todayDay = today.getUTCDate();
@@ -96,7 +93,6 @@ export default function ProfileScreen() {
 
     let age = todayYear - birthYear;
 
-    // Decrease age by 1 if the birthday has not yet occurred this year
     if (todayMonth < birthMonth || (todayMonth === birthMonth && todayDay < birthDay)) {
       age--;
     }
@@ -109,7 +105,6 @@ export default function ProfileScreen() {
     setBloodRhOpen(false);
   }, []);
 
-  // Combined blood type (letter + RH) formatter
   const formatBloodTypeForDisplay = (
     letter: string | null | undefined,
     rh: string | null | undefined
@@ -132,12 +127,15 @@ export default function ProfileScreen() {
   
   // Displays profile data
   useEffect(() => {
+    // FIX: Do not overwrite form data from DB while the user is editing.
+    // This prevents the input from resetting/losing focus on every keystroke.
+    if (isEditing) return;
+
     if (savedProfile.length > 0) {
       const profile = savedProfile[0];
       setCurrentProfile(profile);
 
       let birthdayForForm: Date | null = null;
-      // Convert the stored UTC date to a local date for the picker
       if (profile.dateOfBirth) {
         const utcDate = profile.dateOfBirth;
         birthdayForForm = new Date(utcDate.getUTCFullYear(), utcDate.getUTCMonth(), utcDate.getUTCDate());
@@ -152,7 +150,7 @@ export default function ProfileScreen() {
         bloodTypeRh: profile.bloodTypeRh ?? null,
       });
     }
-  }, [savedProfile]);
+  }, [savedProfile, isEditing]); // Added isEditing to dependencies
 
   // Saves profile changes to database
   const handleSave = () => {
@@ -189,13 +187,11 @@ export default function ProfileScreen() {
     Alert.alert('Success', 'Profile saved successfully!');
   };
 
-  // Handles correct birthdate saving
   const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
       setShowDatePicker(false);
     }
     if (event.type === 'set' && selectedDate) {
-      // Normalize the date to be at midnight local time
       const normalizedDate = new Date(
         selectedDate.getFullYear(),
         selectedDate.getMonth(),
@@ -205,12 +201,10 @@ export default function ProfileScreen() {
     }
   };
 
-  // Handles form changes
   const handleInputChange = <K extends keyof typeof formData>(field: K, value: typeof formData[K]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // Handles edit profile button
   const handleEditToggle = () => {
     if (isEditing) {
       handleSave();
@@ -218,6 +212,7 @@ export default function ProfileScreen() {
       setIsEditing(true);
     }
   };
+
   return (
     <View style={styles.container}>
       {/* First Name Field */}
