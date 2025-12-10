@@ -227,7 +227,7 @@ export default function CycleTrackingScreen() {
 
   }, [realm, nextPrediction, scheduleNotificationAsync, cancelNotificationByIdAsync]);
 
-  // --- recalculate and reschedule on data change ---
+  // recalculate and reschedule on data change
   useEffect(() => {
     const nextPredictedDate = calculateNextPrediction(periodEntries);
     updatePredictionAndNotification(nextPredictedDate);

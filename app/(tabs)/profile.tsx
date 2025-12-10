@@ -127,8 +127,6 @@ export default function ProfileScreen() {
   
   // Displays profile data
   useEffect(() => {
-    // FIX: Do not overwrite form data from DB while the user is editing.
-    // This prevents the input from resetting/losing focus on every keystroke.
     if (isEditing) return;
 
     if (savedProfile.length > 0) {
@@ -150,7 +148,7 @@ export default function ProfileScreen() {
         bloodTypeRh: profile.bloodTypeRh ?? null,
       });
     }
-  }, [savedProfile, isEditing]); // Added isEditing to dependencies
+  }, [savedProfile, isEditing]);
 
   // Saves profile changes to database
   const handleSave = () => {
@@ -276,7 +274,7 @@ export default function ProfileScreen() {
       </View>
 
       {/* Gender Field */}
-      <View style={{ marginBottom: 15, zIndex: 999 }}>
+      <View style={{ marginBottom: 15, zIndex: genderOpen ? 1000 : 1 }}>
         <Text style={styles.text}>Gender</Text>
         {isEditing ? (
           <DropDownPicker
@@ -300,7 +298,7 @@ export default function ProfileScreen() {
       </View>
 
       {/* Blood Type Field */}
-      <View style={{ marginBottom: 20, zIndex: 99 }}>
+      <View style={{ marginBottom: 20, zIndex: (bloodLetterOpen || bloodRhOpen) ? 1000 : 1 }}>
         <Text style={styles.text}>Blood Type</Text>
         {isEditing ? (
           <View style={styles.bloodTypeContainer}>
@@ -371,9 +369,7 @@ const styles = StyleSheet.create({
   input: {
     color: '#020202',
     backgroundColor: 'white',
-    borderColor: '#6C4386',
-    borderWidth: 1,
-    borderRadius: 24,
+    borderRadius: 16,
     padding: 16,
     marginTop: 4,
     fontSize: 14,
@@ -396,14 +392,14 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     color: '#020202',
-    borderColor: '#6C4386',
-    borderWidth: 1,
-    borderRadius: 24,
+    borderRadius: 16,
     paddingHorizontal: 16,
     marginTop: 4,
     fontSize: 16,
+    borderWidth: 0
   },
   dropdownContainer: {
-    borderColor: '#6C4386',
+    paddingHorizontal: 6,
+    borderWidth: 0
   },
 });

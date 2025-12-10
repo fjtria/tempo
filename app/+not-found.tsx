@@ -30,15 +30,15 @@ const styles = StyleSheet.create({
   logo: {
     width: 300,
     height: 100,
-    marginBottom: 20, // (Optional) Add some spacing
+    marginBottom: 16,
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#F5F0F6',
     backgroundColor: '#6C4386',
-    borderRadius: 16
+    borderRadius: 24
   },
 });
