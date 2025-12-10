@@ -81,7 +81,7 @@ export default function Dashboard() {
             return (
               <View
                 key={item._id}
-                style={[styles.reminderItem, { borderColor: config.color }]}
+                style={styles.reminderItem}
               >
                 <Ionicons name={config.icon} size={24} color={config.color} />
                 <View style={styles.reminderTextContainer}>
@@ -210,7 +210,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    borderWidth: 1,
   },
   reminderTextContainer: {
     flex: 1,
