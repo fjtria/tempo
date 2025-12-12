@@ -1,50 +1,59 @@
-# Welcome to your Expo app 👋
+# Tempo - Wellness Management and Menstrual Cycle Tracking
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A privacy-first mobile application for tracking medication schedules, nutrition and hydration goals, and menstrual cycles.
 
-## Get started
+## Installation Guide
 
-1. Install dependencies
+### Prerequisites
 
+1. Node.js and NPM
+   * Download and install [Node.js](https://nodejs.org/en).
+   * After installing, verify the installation by opening terminal and running:
+      ```bash
+      node -v
+      npm -v
+      ```
+
+2. Watchman (MacOS only)
+   * Install using Homebrew:
    ```bash
-   npm install
+   brew install watchman
    ```
+   * If Homebrew is not already installed, install it using the instructions [here](https://brew.sh/).
 
-2. Start the app
+3. Mobile Device Simulators
+   * For iOS (MacOS only)
+      *	Install [Xcode](https://developer.apple.com/xcode/) from the App Store.
+      *	Open Xcode, ensure iOS is selected, and download and install.
+   
+   * For Android (MacOS, Windows, Linux)
+      *	Download and install [Android Studio](https://developer.android.com/studio).
+         *	During installation, ensure the Android SDK and Android Virtual Device (AVD) components are selected.
+      *	Open Android Studio, navigate to Device Manager, then Create a new Virtual Device.
+   
+### Project Setup
 
-   ```bash
-   npx expo start
-   ```
+1.	Navigate to Source Code Folder
+   * In terminal, change directories to the unzipped source code folder.
 
-In the output, you'll find options to open the app in a
+2.	Install Dependencies
+   * Run the command to install all required libraries:
+      ```bash
+      npm install
+      ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Building and Launching the Application
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1.	Ensure either the iOS Simulator or Android Studio is ready and open.
 
-## Get a fresh project
+2.	Run the prebuild command:
+      ```bash
+      npx expo prebuild
+      ```
 
-When you're ready, run:
+3.	Start the application development server:
+      ```bash
+      npx expo start
+      ```
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+4.	In the terminal window with the development server running, type `i` or `a` to install and open the application in either the iOS or Android simulators, respectively.
