@@ -1,5 +1,7 @@
 # Tempo - Wellness Management and Menstrual Cycle Tracking
 
+## Description
+
 A privacy-first mobile application for tracking medication schedules, nutrition and hydration goals, and menstrual cycles.
 
 ## Installation Guide
@@ -9,6 +11,7 @@ A privacy-first mobile application for tracking medication schedules, nutrition 
 1. Node.js and NPM
    * Download and install [Node.js](https://nodejs.org/en).
    * After installing, verify the installation by opening terminal and running:
+
       ```bash
       node -v
       npm -v
@@ -16,9 +19,11 @@ A privacy-first mobile application for tracking medication schedules, nutrition 
 
 2. Watchman (MacOS only)
    * Install using Homebrew:
-   ```bash
-   brew install watchman
-   ```
+
+      ```bash
+      brew install watchman
+      ```
+
    * If Homebrew is not already installed, install it using the instructions [here](https://brew.sh/).
 
 3. Mobile Device Simulators
@@ -38,6 +43,7 @@ A privacy-first mobile application for tracking medication schedules, nutrition 
 
 2.	Install Dependencies
    * Run the command to install all required libraries:
+
       ```bash
       npm install
       ```
@@ -47,11 +53,13 @@ A privacy-first mobile application for tracking medication schedules, nutrition 
 1.	Ensure either the iOS Simulator or Android Studio is ready and open.
 
 2.	Run the prebuild command:
+   
       ```bash
       npx expo prebuild
       ```
 
 3.	Start the application development server:
+   
       ```bash
       npx expo start
       ```
